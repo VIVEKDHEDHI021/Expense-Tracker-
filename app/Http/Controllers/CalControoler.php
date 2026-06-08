@@ -21,14 +21,15 @@ class CalControoler extends Controller
 
       Transaction::create([
     'user_id' => Auth::id(),
-    'title' => $request->title,
+    'title' => 'Expense',
     'amount' => $request->amount,
     'category' => $request->category,
+     'type' => 'expense',
     'transaction_date' => $request->expense_date,
     'description' => $request->description
 ]);
 
-        return redirect('/dashboard');
+        return redirect('/dashboard');  
     }
     
 
@@ -75,6 +76,58 @@ class CalControoler extends Controller
             ->get();
 
         return view('dashboard', compact(
+            'totalIncome',
+            'totalExpense',
+            'balance',
+            'recentTransactions'
+        ));
+    }
+     public function profile()
+    {
+        $userId = Auth::id();
+
+        $totalIncome = Transaction::where('user_id', $userId)
+            ->where('type', 'income')
+            ->sum('amount');
+
+        $totalExpense = Transaction::where('user_id', $userId)
+            ->where('type', 'expense')
+            ->sum('amount');
+
+        $balance = $totalIncome - $totalExpense;
+
+        $recentTransactions = Transaction::where('user_id', $userId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('profile', compact(
+            'totalIncome',
+            'totalExpense',
+            'balance',
+            'recentTransactions'
+        ));
+    }
+     public function workerdisplay()
+    {
+        $userId = Auth::id();
+
+        $totalIncome = Transaction::where('user_id', $userId)
+            ->where('type', 'income')
+            ->sum('amount');
+
+        $totalExpense = Transaction::where('user_id', $userId)
+            ->where('type', 'expense')
+            ->sum('amount');
+
+        $balance = $totalIncome - $totalExpense;
+
+        $recentTransactions = Transaction::where('user_id', $userId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('workerdisplay', compact(
             'totalIncome',
             'totalExpense',
             'balance',

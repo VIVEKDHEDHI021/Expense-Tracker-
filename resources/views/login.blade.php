@@ -72,7 +72,7 @@ body{
     </form>
 
     <div class="text-center mt-3">
-        <a href="/register">
+        <a href="/">
             Create New Account
         </a>
     </div>
