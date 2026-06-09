@@ -15,6 +15,8 @@ Route::view('/transaction/add-expense', 'add-expense');
 Route::view('/transaction/add-income', 'add-income');
 Route::view('/worker', 'worker');
 Route::view('/worker_money', 'worker_money');
+Route::view('/workerprofile', 'workerprofile');
+Route::view('/workerlist', 'workerlist');
 
 
 
@@ -27,5 +29,12 @@ Route::get('/profile', [CalControoler::class, 'profile'])->middleware('auth');
 Route::get('/workerdisplay',[CalControoler::class, 'workerdisplay']);
 Route::post('/worker', [workerinfo::class, 'workerdetail']);
 Route::post('/worker_money', [workerinfo::class, 'addmoney']);
-Route::get('/worker_money', [workerinfo::class, 'workermoney']);
+Route::get('/worker_money', [workerinfo::class, 'worker_money']);
+
 Route::get('/workerdisplay', [workerinfo::class, 'showTransaction']);
+Route::get('/workerprofile', [workerinfo::class, 'workerprofile']);
+Route::get('/workerprofile/{id}', [workerinfo::class, 'workerprofile']);
+Route::delete('/transaction/{id}', [CalControoler::class, 'distroy']);
+Route::delete('/WorkerTransaction/{id}', [workerinfo::class, 'distroy']);
+Route::delete('/deleteworker/{id}', [workerinfo::class, 'deleteworker']);
+Route::get('/workerlist', [workerinfo::class, 'workerlist']);

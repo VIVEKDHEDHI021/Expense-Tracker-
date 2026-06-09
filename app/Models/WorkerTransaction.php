@@ -8,6 +8,7 @@ class WorkerTransaction extends Model
 {
     protected $fillable=[
             'id',
+            'worker_id',
             'user_id',
             'worker_name',
             'amount',  

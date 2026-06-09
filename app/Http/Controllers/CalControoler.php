@@ -134,6 +134,24 @@ class CalControoler extends Controller
             'recentTransactions'
         ));
     }
+    public function distroy($id){
+            $transaction= Transaction::findorfail($id);
+
+            if(!$transaction){
+             return response()->json([
+            'success' => false,
+            'message' => 'Transaction not found'
+        ], 404);
+            }else{
+
+                $transaction->delete();
+                return redirect('dashboard');   
+                // return response()->json([
+                //     "success"=>true,
+                //     "message"=>'deleted'
+                // ]);
+            }
+    }
 }
 
    

@@ -34,7 +34,7 @@ class workerinfo extends Controller
         ]);
 
 
-
+        return redirect('workerlist');
         return response()->json([
             'success' => true,
             'message' => 'Worker added successfully',
@@ -51,28 +51,18 @@ class workerinfo extends Controller
 
     }
 }
-    
-
-public function workerMoney()
-{
-    $workers = worker::where('user_id', Auth::id())->get();
-
-    return view('worker_money', compact('workers'));
-    dd('workers');
-}
-
-
     public function addmoney(Request $request)
     {
         try {
             $validatedData = $request->validate([
+                 
                 'worker_name' => 'required|string|max:255',
                 'amount' => 'required|numeric',
                 'transaction_date' => 'required|date',
                 'payment_type' => 'required|in:cash,upi,bank',
                 'description' => 'nullable|string',
             ]);
-
+            
             WorkerTransaction::create([
                 'user_id' => Auth::id(),
                 'worker_name' => $validatedData['worker_name'],
@@ -80,13 +70,11 @@ public function workerMoney()
                 'transaction_date' => $validatedData['transaction_date'],
                 'payment_type' => $validatedData['payment_type'],
                 'description' => $validatedData['description'] ?? null,
-            ]);
-
-               return redirect('/workerdisplay');           
-            // return response()->json([
-            //     'success' => true,
-            //     'message' => 'transaction added successfully',
-            // ], 201);
+                ]);
+                
+                return redirect('/workerdisplay');           
+          
+          
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -96,19 +84,85 @@ public function workerMoney()
         }
     }
 
+    public function worker_money()
+{
+    $user_id = Auth::id();
+
+    $workers = Worker::where('user_id', $user_id)->get();
+
+    return view('worker_money', compact('workers'));
+}
+
     function showTransaction(){
         $user_id= Auth::id();
         $totalExpense =WorkerTransaction::where('user_id',$user_id)->sum('amount');
-
+        $worker =Worker::where('user_id',$user_id)->first();
         $recentTransactions = WorkerTransaction::where('user_id', $user_id)
             ->latest()
             ->take(10)
             ->get();
 
         return view('workerdisplay', compact(
-           
+            'worker',
             'totalExpense',
             'recentTransactions'));
     }
+    function workerprofile(){
+        $user_id= Auth::id();
+        $worker=worker::where('user_id',$user_id)->first();
+    
+        $totalExpense =WorkerTransaction::where('user_id',$user_id)->sum('amount');
+ 
+        $recentTransactions = WorkerTransaction::where('user_id', $user_id)
+            ->latest()
+            ->take(10)
+            ->get();
 
+        return view('workerprofile', compact(
+            'worker',
+            'totalExpense',
+            'recentTransactions'
+        
+           ));
+    }
+
+    function distroy($id){
+        $transaction= WorkerTransaction::findorfail($id);
+        if(!$transaction){
+            return response()->json([
+                "success"=> true,
+                "messsage"=>'Transaction not exist'
+            ]);
+        }else{
+            $transaction->delete();
+            return redirect('workerdisplay');
+        }
+    }
+   public function workerlist()
+{
+    $user_id = Auth::id();
+    $workers = Worker::where('user_id', $user_id)->get();
+    $borrowedmoney = WorkerTransaction::where('user_id',$user_id)->sum('amount');
+    return view('workerlist', compact('workers','borrowedmoney'));
+  
+         
+    
+}
+
+    public function deleteworker($id){
+        $user_id= Auth::id();
+        $worker = Worker::where('user_id', $user_id)->first();
+        if(!$worker){
+            return response()->json([
+                "success"=>false,
+                "message"=> 'no worker exist'
+            ]);
+
+        }else{
+            $worker->delete();
+            return redirect('workerlist');
+        }
+        
+    }
+   
 }
