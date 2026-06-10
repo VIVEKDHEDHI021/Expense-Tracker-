@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Give Money to Worker | Expense Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen flex items-center justify-center p-4">
 
@@ -23,20 +29,21 @@
             @csrf
 
             <div>
-    <label for="worker_name"
+    <label for="worker_id"
         class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
         Select Worker
     </label>
 
-    <select name="worker_id" required>
-    <option value="">Select Worker</option>
+    <select name="worker_id" id="worker_id" required
+            class="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition">
+        <option value="" class="bg-slate-800 text-slate-400">Select Worker</option>
 
-    @foreach($workers as $worker)
-        <option value="{{ $worker->worker_id }}">
-            {{ $worker->worker_id }} - {{ $worker->worker_name }}
-        </option>
-    @endforeach
-</select>
+        @foreach($workers as $worker)
+            <option value="{{ $worker->worker_id }}" class="bg-slate-800 text-white">
+                {{ $worker->worker_id }} - {{ $worker->worker_name }}
+            </option>
+        @endforeach
+    </select>
 </div>
 
             <div>

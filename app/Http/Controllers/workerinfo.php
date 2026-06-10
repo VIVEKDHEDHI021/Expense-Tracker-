@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Worker;
 use App\Models\WorkerTransaction;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class workerinfo extends Controller
@@ -109,8 +110,7 @@ class workerinfo extends Controller
         $worker =Worker::where('user_id',$user_id)->first();
         $recentTransactions = WorkerTransaction::where('user_id', $user_id)
             ->latest()
-            ->take(10)
-            ->get();
+            ->paginate(10);
 
         return view('workerdisplay', compact(
             'worker',
@@ -131,8 +131,7 @@ class workerinfo extends Controller
  
         $recentTransactions = WorkerTransaction::where('user_id', $user_id)->where('worker_id',$worker->worker_id)  
             ->latest()
-            ->take(10)
-            ->get();
+            ->paginate(10);
 
         return view('workerprofile', compact(
             'worker',
@@ -157,7 +156,7 @@ class workerinfo extends Controller
    public function workerlist()
 {
     $user_id = Auth::id();
-    $workers = Worker::where('user_id', $user_id)->get();
+    $workers = Worker::where('user_id', $user_id)->paginate(10);
 foreach ($workers as $worker) {
 
     $worker->borrowed_money = WorkerTransaction::where('user_id', $user_id)

@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worker Profile | Expense Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen text-slate-100 font-sans py-6 px-4">
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen text-slate-100 py-6 px-4">
 
 <div class="max-w-5xl mx-auto">
 
@@ -118,6 +124,40 @@
                         </tbody>
                     </table>
                 </div>
+
+                @if ($recentTransactions->hasPages())
+                <div class="flex items-center justify-between mt-6 text-sm">
+                    {{-- Previous Button --}}
+                    @if ($recentTransactions->onFirstPage())
+                        <span class="px-4 py-2 rounded-xl bg-white/5 text-slate-500 cursor-not-allowed">
+                            ◀ Previous
+                        </span>
+                    @else
+                        <a href="{{ $recentTransactions->previousPageUrl() }}"
+                           class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white">
+                            ◀ Previous
+                        </a>
+                    @endif
+
+                    {{-- Current Page --}}
+                    <div class="px-5 py-2 rounded-xl bg-white/10 text-white font-semibold">
+                        Page {{ $recentTransactions->currentPage() }} / {{ $recentTransactions->lastPage() }}
+                    </div>
+
+                    {{-- Next Button --}}
+                    @if ($recentTransactions->hasMorePages())
+                        <a href="{{ $recentTransactions->nextPageUrl() }}"
+                           class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition text-white">
+                            Next ▶
+                        </a>
+                    @else
+                        <span class="px-4 py-2 rounded-xl bg-white/5 text-slate-500 cursor-not-allowed">
+                            Next ▶
+                        </span>
+                    @endif
+                </div>
+                @endif
+
             </div>
         </div>
 
