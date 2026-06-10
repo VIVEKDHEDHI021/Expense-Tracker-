@@ -70,7 +70,7 @@
                 <div class="space-y-1.5 mb-4 text-xs">
                     <div class="flex justify-between">
                         <span class="text-slate-400">Borrowed Money</span>
-                        <span class="text-white font-semibold">₹{{ number_format($borrowedmoney ?? 0,2) }}</span>
+                        <span class="text-white font-semibold">₹{{ number_format($worker->borrowed_money ?? 0, 2) }}</span>
                     </div>
                     <div class="flex justify-between gap-2">
                         <span class="text-slate-400 shrink-0">Address</span>
@@ -82,7 +82,7 @@
             <!-- Action Buttons -->
             <div class="space-y-2">
                 <div class="grid grid-cols-2 gap-2">
-                    <a href="/workerprofile/{{ $worker->id }}"
+                    <a href="/workerprofile/{{ $worker->worker_id }}"
                        class="text-center bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white py-1.5 rounded-lg text-xs font-semibold shadow-md transition-all duration-300">
                         👤 Profile
                     </a>

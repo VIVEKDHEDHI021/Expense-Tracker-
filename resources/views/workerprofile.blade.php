@@ -68,7 +68,7 @@
                     Total Borrowed Money
                 </p>
                 <h2 class="text-2xl font-bold text-white mt-1">
-                    ₹{{ number_format($totalExpense, 2) }}
+                    ₹{{ number_format($borrowed_money, 2) }}
                 </h2>
             </div>
 

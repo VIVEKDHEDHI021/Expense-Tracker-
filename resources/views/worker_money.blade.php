@@ -28,22 +28,15 @@
         Select Worker
     </label>
 
-    <select name="worker_name"
-            id="worker_name"
-            required
-            class="w-full bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white">
+    <select name="worker_id" required>
+    <option value="">Select Worker</option>
 
-        <option value="" disabled selected>
-            Select Worker
+    @foreach($workers as $worker)
+        <option value="{{ $worker->worker_id }}">
+            {{ $worker->worker_id }} - {{ $worker->worker_name }}
         </option>
-
-        @foreach($workers as $worker)
-            <option value="{{ $worker->worker_name }}">
-                {{ $worker->worker_name }}
-            </option>
-        @endforeach
-
-    </select>
+    @endforeach
+</select>
 </div>
 
             <div>

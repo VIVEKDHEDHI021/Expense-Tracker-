@@ -23,9 +23,13 @@ class workerinfo extends Controller
             'salary' => 'nullable|numeric',
             'notes' => 'nullable|string',
         ]);
+        $lastWorker = Worker::max('worker_id');
+
+            $newWorkerId = $lastWorker ? $lastWorker + 1 : 1001;
 
         $worker = Worker::create([
             'user_id' => Auth::id(),
+            'worker_id'    => $newWorkerId,
             'worker_name' => $validatedData['worker_name'],
             'mobile' => $validatedData['mobile'] ?? null,
             'address' => $validatedData['address'] ?? null,
@@ -56,23 +60,29 @@ class workerinfo extends Controller
         try {
             $validatedData = $request->validate([
                  
-                'worker_name' => 'required|string|max:255',
+                'worker_id' => 'required|integer',
                 'amount' => 'required|numeric',
                 'transaction_date' => 'required|date',
                 'payment_type' => 'required|in:cash,upi,bank',
                 'description' => 'nullable|string',
             ]);
+            $worker = Worker::where('worker_id', $validatedData['worker_id'])
+             ->where('user_id', Auth::id())
+             ->firstOrFail();
+            
             
             WorkerTransaction::create([
                 'user_id' => Auth::id(),
-                'worker_name' => $validatedData['worker_name'],
+
+                'worker_id' => $worker->worker_id,
+                'worker_name' => $worker->worker_name,
                 'amount' => $validatedData['amount'],
                 'transaction_date' => $validatedData['transaction_date'],
                 'payment_type' => $validatedData['payment_type'],
                 'description' => $validatedData['description'] ?? null,
                 ]);
                 
-                return redirect('/workerdisplay');           
+                return redirect('/workerlist');           
           
           
         } catch (\Exception $e) {
@@ -107,20 +117,26 @@ class workerinfo extends Controller
             'totalExpense',
             'recentTransactions'));
     }
-    function workerprofile(){
+    function workerprofile($id){
         $user_id= Auth::id();
-        $worker=worker::where('user_id',$user_id)->first();
-    
-        $totalExpense =WorkerTransaction::where('user_id',$user_id)->sum('amount');
+        
+        $worker = Worker::where('user_id', $user_id)
+        ->where('worker_id', $id)
+        ->firstOrFail();
+      
+        $borrowed_money = WorkerTransaction::where('user_id', Auth::id())
+        ->where('worker_id', $worker->worker_id)
+        ->sum('amount');
+
  
-        $recentTransactions = WorkerTransaction::where('user_id', $user_id)
+        $recentTransactions = WorkerTransaction::where('user_id', $user_id)->where('worker_id',$worker->worker_id)  
             ->latest()
             ->take(10)
             ->get();
 
         return view('workerprofile', compact(
             'worker',
-            'totalExpense',
+            'borrowed_money',
             'recentTransactions'
         
            ));
@@ -142,8 +158,14 @@ class workerinfo extends Controller
 {
     $user_id = Auth::id();
     $workers = Worker::where('user_id', $user_id)->get();
-    $borrowedmoney = WorkerTransaction::where('user_id',$user_id)->sum('amount');
-    return view('workerlist', compact('workers','borrowedmoney'));
+foreach ($workers as $worker) {
+
+    $worker->borrowed_money = WorkerTransaction::where('user_id', $user_id)
+        ->where('worker_id', $worker->worker_id)
+        ->sum('amount');
+}
+return view('workerlist', compact('workers'));
+
   
          
     
@@ -159,8 +181,10 @@ class workerinfo extends Controller
             ]);
 
         }else{
+        
+            $transaction = WorkerTransaction::where('user_id',$user_id)->where('worker_id',$worker->worker_id)->delete();
             $worker->delete();
-            return redirect('workerlist');
+            return redirect('workerlist')->with('success', 'Worker and all transactions deleted successfully.');
         }
         
     }

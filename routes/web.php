@@ -30,7 +30,6 @@ Route::get('/workerdisplay',[CalControoler::class, 'workerdisplay']);
 Route::post('/worker', [workerinfo::class, 'workerdetail']);
 Route::post('/worker_money', [workerinfo::class, 'addmoney']);
 Route::get('/worker_money', [workerinfo::class, 'worker_money']);
-
 Route::get('/workerdisplay', [workerinfo::class, 'showTransaction']);
 Route::get('/workerprofile', [workerinfo::class, 'workerprofile']);
 Route::get('/workerprofile/{id}', [workerinfo::class, 'workerprofile']);
